@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Shows for {{ movie.title }} | BookMyShow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position : sticky;
+            top : 0;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .event-details {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .event-details img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            max-height: 250px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .event-details h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .event-details p {
+            color: #7f8c8d;
+            font-size: 1em;
+        }
+        h2.section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .show-list {
+            list-style: none;
+            padding: 0;
+        }
+        .show-card {
+            background-color: white;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+        .show-card:hover {
+            background-color: #e9f8f2;
+        }
+        .show-info {
+            font-size: 1.1em;
+            color: #34495e;
+        }
+        .show-time {
+            font-weight: bold;
+        }
+        .btn-book {
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn-book:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Showtimes for "{{ movie.title }}"</h1>
+    </header>
+    <div class="container">
+        <a href="{% url 'home' %}" class="back-link">&larr; Back to Home</a>
+        
+        <!-- Event Details -->
+        <div class="event-details">
+            <img src="{{ movie.image.url }}" alt="{{ movie.title }}">
+            <h2>{{ movie.title }}</h2>
+            <p>{{ movie.description }}</p>
+        </div>
+
+        <!-- Show List -->
+        <h2 class="section-title">Available Shows</h2>
+        {% if shows %}
+            <ul class="show-list">
+                {% for show in shows %}
+                    <li class="show-card">
+                        <div class="show-info">
+                            <span class="show-time">{{ show.show_time|date:"M d, Y H:i" }}</span> &nbsp;|&nbsp; 
+                            Available Seats: {{ show.available_seats }}
+                        </div>
+                        <a href="{% url 'book_show' show.id %}" class="btn-book">Book Now</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No shows scheduled for this movie yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

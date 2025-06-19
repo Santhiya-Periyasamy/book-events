@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Booking Successful</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background: linear-gradient(135deg, #81ecec, #6c5ce7);
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #2d3436;
+    }
+    .success-container {
+        background: white;
+        padding: 40px 50px;
+        border-radius: 15px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: fadeInScale 0.6s ease forwards;
+    }
+    @keyframes fadeInScale {
+        0% {opacity: 0; transform: scale(0.7);}
+        100% {opacity: 1; transform: scale(1);}
+    }
+    .success-icon {
+        font-size: 70px;
+        color: #00b894;
+        margin-bottom: 20px;
+    }
+    h1 {
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #0984e3;
+    }
+    p {
+        font-size: 1.1em;
+        margin: 15px 0 25px 0;
+        color: #636e72;
+    }
+    .details {
+        background: #dfe6e9;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        font-weight: 600;
+        color: #2d3436;
+        letter-spacing: 0.04em;
+    }
+    .btn {
+        display: inline-block;
+        background: #6c5ce7;
+        color: white;
+        text-decoration: none;
+        padding: 14px 35px;
+        font-weight: 700;
+        border-radius: 30px;
+        box-shadow: 0 8px 15px rgba(108, 92, 231, 0.3);
+        transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+        background: #5a4bd1;
+        box-shadow: 0 12px 20px rgba(90, 75, 209, 0.5);
+    }
+</style>
+</head>
+<body>
+
+<div class="success-container">
+    <div class="success-icon">✅</div>
+    <h1>Booking Confirmed!</h1>
+    <p>Thank you, <strong>{{ name }}</strong>, for booking with us.</p>
+    <div class="details">
+        Movie: {{ movie_title }}<br/>
+        Seats Booked: {{ seats }}
+    </div>
+    <a href="{% url 'home' %}" class="btn">Back to Home</a>
+</div>
+
+</body>
+</html>

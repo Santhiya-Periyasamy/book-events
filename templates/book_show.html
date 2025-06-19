@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Seats | {{ show.event.title }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .theater {
+            display: grid;
+            grid-template-columns: repeat(10, 40px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .seat {
+            width: 40px;
+            height: 40px;
+            background-color: #7f8c8d;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 40px;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .seat.selected {
+            background-color: #27ae60;
+        }
+
+        .seat.booked {
+            background-color: #c0392b;
+            cursor: not-allowed;
+        }
+
+        .screen {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .booking-form {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 200px;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #27ae60;
+        }
+
+        .info {
+            margin-top: 20px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Book Seats for {{ show.event.title }}</h1>
+    <h2>{{ show.show_time }}</h2>
+
+    <div class="screen">SCREEN THIS WAY</div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="theater">
+            {% for row in rows %}
+                {% for col in cols %}
+                    {% with seat_id=row|stringformat:"s"|add:col|stringformat:"s" %}
+                        <div class="seat {% if seat_id in booked_seats %}booked{% endif %}"
+                             data-seat="{{ seat_id }}">
+                            {{ seat_id }}
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <div class="booking-form">
+            <!-- Use hidden inputs for selected seats array -->
+            <div id="selected-seats-container"></div>
+            <input type="text" name="name" placeholder="Your Name" required><br>
+            <div class="info">
+                Selected Seats: <span id="seat-count">0</span><br>
+                Total Price: ₹<span id="total-price">0</span> (₹{{ show.price|default:"100" }} per seat)
+            </div><br>
+            {% if error %}
+                <p style="color:red;">{{ error }}</p>
+            {% endif %}
+            <button type="submit" class="btn">Confirm Booking</button>
+        </div>
+    </form>
+
+    <script>
+        const seats = document.querySelectorAll('.seat:not(.booked)');
+        const selectedSeatsContainer = document.getElementById('selected-seats-container');
+        const seatCount = document.getElementById('seat-count');
+        const totalPrice = document.getElementById('total-price');
+       const pricePerSeat = parseFloat('{{ show.price|default:"100" }}');
+
+        let selectedSeats = [];
+
+        seats.forEach(seat => {
+            seat.addEventListener('click', () => {
+                const seatId = seat.getAttribute('data-seat');
+                if (selectedSeats.includes(seatId)) {
+                    selectedSeats = selectedSeats.filter(s => s !== seatId);
+                    seat.classList.remove('selected');
+                } else {
+                    selectedSeats.push(seatId);
+                    seat.classList.add('selected');
+                }
+                updateSelectedSeats();
+            });
+        });
+
+        function updateSelectedSeats() {
+            // Clear any existing inputs
+            selectedSeatsContainer.innerHTML = '';
+            selectedSeats.forEach(seat => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selected_seats[]';
+                input.value = seat;
+                selectedSeatsContainer.appendChild(input);
+            });
+            seatCount.innerText = selectedSeats.length;
+            totalPrice.innerText = selectedSeats.length * pricePerSeat;
+        }
+    </script>
+</body>
+</html>

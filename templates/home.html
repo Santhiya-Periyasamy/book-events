@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Booking App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(90deg, #34495e, #2c3e50);
+      color: white;
+      padding: 8px 0;
+      text-align: center;
+      position: sticky;
+      top :0;
+      z-index : 1000;
+    }
+    header h1 {
+      font-size: 1.6em;
+      margin: 0;
+    }
+    header p {
+      font-size: 1em;
+      margin-top: 5px;
+      opacity: 0.9;
+    }
+    .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 25px;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.3s;
+    }
+    .search-icon:hover {
+      transform: scale(1.2);
+    }
+    header a {
+      color: #ecf0f1;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    header a:hover {
+      text-decoration: underline;
+      color: #27ae60;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .container h2 {
+      font-size: 2em;
+      text-align: left;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+    .scroll-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 10px 0 30px;
+      scrollbar-width: thin;
+      scrollbar-color: #27ae60 #f4f4f9;
+    }
+    .scroll-container::-webkit-scrollbar {
+      height: 10px;
+    }
+    .scroll-container::-webkit-scrollbar-thumb {
+      background-color: #27ae60;
+      border-radius: 10px;
+    }
+    .event-card {
+      flex: 0 0 auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 240px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .event-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+    }
+    .event-card h3 {
+      font-size: 1.1em;
+      color: #2c3e50;
+      margin: 10px 15px 5px;
+    }
+    .event-card p {
+      font-size: 0.9em;
+      color: #7f8c8d;
+      margin: 0 15px 15px;
+      flex-grow: 1;
+    }
+    .latest-event {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 20px;
+}
+
+.latest-event img {
+    width: 100%;
+    height: 200px;  /* adjust height as needed */
+    object-fit: contain;
+    background-color: #f9f9f9;
+}
+
+.latest-event h3 {
+    font-size: 1.5em;
+    color: #2c3e50;
+    margin: 10px 0;
+}
+
+.latest-event p {
+    font-size: 1em;
+    color: #7f8c8d;
+    margin-bottom: 10px;
+}
+
+    .btn {
+      align-self: center;
+      margin: 0 0 15px 0;
+      padding: 10px 20px;
+      background-color: #27ae60;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #219150;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto 30px;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    .carousel-slide {
+      display: none;
+      flex-direction: column;
+      background-color: white;
+    }
+    .carousel-slide.active {
+      display: flex;
+      animation: fadein 1s;
+    }
+    @keyframes fadein {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .carousel img {
+      width: 100%;
+      height: 250px;
+      object-fit: contain;
+    }
+    .carousel h3 {
+      margin: 15px;
+      font-size: 1.3em;
+      color: #2c3e50;
+    }
+    .carousel p {
+      margin: 0 15px 15px;
+      color: #7f8c8d;
+      font-size: 1em;
+    }
+    .carousel .btn {
+      margin-bottom: 20px;
+    }
+
+    footer {
+      background-color: #34495e;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      position: sticky;
+      bottom: 0;
+    }
+    footer nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+    footer nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 1em;
+      transition: color 0.3s;
+    }
+    footer nav a:hover {
+      color: #27ae60;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Book Your Events</h1>
+    <p>Discover and book your favorite events with ease</p>
+    <a href="{% url 'search_page' %}" class="search-icon"><i class="fas fa-search"></i></a>
+    {% if user.is_authenticated %}
+      <p>Welcome, {{ user.username }}! <a href="{% url 'logout' %}">Logout</a></p>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+  </header>
+
+  <div class="container">
+    <!-- Latest Events Carousel -->
+    <h2>Latest Events</h2>
+    <div class="carousel">
+      {% for event in events %}
+      <div class="carousel-slide{% if forloop.first %} active{% endif %}">
+        <img src="{{ event.image.url }}" alt="{{ event.title }}">
+        <h3>{{ event.title }}</h3>
+        <p>{{ event.description|truncatechars:120 }}</p>
+        <a href="{% url 'show_list' event.id %}" class="btn">Book Now</a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Movies -->
+    <h2>Movies</h2>
+    <div class="scroll-container">
+      {% for movie in movies %}
+      <div class="event-card">
+        <img src="{{ movie.image.url }}" alt="{{ movie.title }}">
+        <h3>{{ movie.title }}</h3>
+        <p>{{ movie.description|truncatechars:80 }}</p>
+        <a href="{% url 'show_list' movie.id %}" class="btn">Explore</a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <h2>Concerts</h2>
+    <div class="scroll-container">
+      {% for concert in concerts %}
+      <div class="event-card">
+        <img src="{{ concert.image.url }}" alt="{{ concert.title }}">
+        <h3>{{ concert.title }}</h3>
+        <p>{{ concert.description|truncatechars:80 }}</p>
+        <a href="{% url 'show_list' concert.id %}" class="btn">Explore</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <footer>
+    <nav>
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'all_events' %}">Events</a>
+      <a href="{% url 'all_shows' %}">Shows</a>
+      <a href="{% url 'profile' %}">Profile</a>
+    </nav>
+  </footer>
+
+  <script>
+    let slides = document.querySelectorAll('.carousel-slide');
+    let currentSlide = 0;
+    function showNextSlide() {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }
+    setInterval(showNextSlide, 2000);
+  </script>
+</body>
+</html>

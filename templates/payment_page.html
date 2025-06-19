@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure Payment</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .payment-box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #34495e;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #219150;
+        }
+        .payment-methods {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .payment-method {
+            cursor: pointer;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            flex: 1;
+            text-align: center;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+        .payment-method:last-child {
+            margin-right: 0;
+        }
+        .payment-method.selected {
+            background-color: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+        .card-logos {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .card-logos img {
+            height: 30px;
+            margin: 0 5px;
+        }
+        .loader {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .loader span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin: 3px;
+            background-color: #27ae60;
+            border-radius: 50%;
+            animation: bounce 0.6s infinite alternate;
+        }
+        .loader span:nth-child(2) { animation-delay: 0.2s; }
+        .loader span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-box">
+        <h2>Pay ₹{{ booking.total_price }}</h2>
+        <p style="text-align:center;">Seats: {{ booking.seat_names }}</p>
+        
+        <div class="payment-methods">
+            <div class="payment-method selected" data-method="card">Card</div>
+            <div class="payment-method" data-method="upi">UPI</div>
+        </div>
+
+        <form id="payment-form" method="POST">
+            {% csrf_token %}
+            <div id="card-section">
+                <div class="card-logos">
+                    <img src="{% static 'images/visa.svg' %}" alt="Visa">
+                    <img src="{% static 'images/mastercard.svg' %}" alt="MasterCard">
+                    <img src="{% static 'images/rupay.svg' %}" alt="RuPay">
+                </div>
+                <label for="card-number">Card Number</label>
+                <input type="text" id="card-number" name="card_number" placeholder="1234 5678 9012 3456" required>
+                
+                <label for="expiry">Expiry Date</label>
+                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                
+                <label for="cvv">CVV</label>
+                <input type="password" id="cvv" name="cvv" placeholder="123" required>
+            </div>
+
+            <div id="upi-section" style="display:none;">
+                <label for="upi-id">UPI ID</label>
+                <input type="text" id="upi-id" name="upi_id" placeholder="example@upi">
+            </div>
+
+            <button type="submit" class="btn">Pay Now</button>
+            <div class="loader" id="loader">
+                <span></span><span></span><span></span>
+            </div>
+        </form>
+
+        {% if error %}
+            <p style="color:red; text-align:center;">{{ error }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        const methods = document.querySelectorAll('.payment-method');
+        const cardSection = document.getElementById('card-section');
+        const upiSection = document.getElementById('upi-section');
+        const paymentForm = document.getElementById('payment-form');
+        const loader = document.getElementById('loader');
+
+        methods.forEach(method => {
+            method.addEventListener('click', () => {
+                methods.forEach(m => m.classList.remove('selected'));
+                method.classList.add('selected');
+                if (method.dataset.method === 'card') {
+                    cardSection.style.display = 'block';
+                    upiSection.style.display = 'none';
+                    // Set required attributes
+                    document.getElementById('card-number').required = true;
+                    document.getElementById('expiry').required = true;
+                    document.getElementById('cvv').required = true;
+                    document.getElementById('upi-id').required = false;
+                } else {
+                    cardSection.style.display = 'none';
+                    upiSection.style.display = 'block';
+                    // Set required attributes
+                    document.getElementById('card-number').required = false;
+                    document.getElementById('expiry').required = false;
+                    document.getElementById('cvv').required = false;
+                    document.getElementById('upi-id').required = true;
+                }
+            });
+        });
+
+        paymentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            loader.style.display = 'block';
+
+            setTimeout(() => {
+                paymentForm.submit();
+            }, 2000); // simulate payment delay
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .events-container {
+            max-width: 1000px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .event-card {
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .event-card img {
+            width: 250px;
+            height: 150px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .event-details {
+            flex: 1;
+        }
+        .event-details h3 {
+            margin: 0 0 10px;
+            color: #2c3e50;
+        }
+        .event-details p {
+            margin: 0 0 15px;
+            color: #7f8c8d;
+        }
+        .btn-book {
+            display: inline-block;
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn-book:hover {
+            background-color: #27ae60;
+        }
+        footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #2c3e50;
+        color: white;
+        padding: 10px 0;
+    }
+
+    footer nav {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+    }
+
+    footer nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    footer nav a:hover {
+        color :#27ae60;
+        text-decoration: underline;
+    }
+    </style>
+</head>
+<body>
+    <h1>All Events</h1>
+    <div class="events-container">
+        {% for event in events %}
+            <div class="event-card">
+                {% if event.image %}
+                    <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                {% endif %}
+                <div class="event-details">
+                    <h3>{{ event.title }}</h3>
+                    <p>{{ event.description|truncatechars:200 }}</p>
+                    <a href="{% url 'show_list' event.id %}" class="btn-book">Book Now</a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="text-align: center; width: 100%;">No events available at the moment.</p>
+        {% endfor %}
+    </div>
+    <footer>
+    <nav>
+        <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+        <a href="{% url 'all_events' %}"><i class="fas fa-calendar-alt"></i> Events</a>
+        <a href="{% url 'all_shows' %}"><i class="fas fa-film"></i> Shows</a>
+        <a href="{% url 'profile' %}"><i class="fas fa-user"></i> Profile</a>
+    </nav>
+</footer>
+</body>
+</html>

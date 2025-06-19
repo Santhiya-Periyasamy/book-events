@@ -1,0 +1,91 @@
+<!-- edit_profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #555;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="file"] {
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            background: #4a90e2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #357ab8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Your Profile</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="id_username">Username:</label>
+            {{ form.username }}
+
+            <label for="id_email">Email:</label>
+            {{ form.email }}
+
+            <label for="id_first_name">First Name:</label>
+            {{ form.first_name }}
+
+            <label for="id_last_name">Last Name:</label>
+            {{ form.last_name }}
+
+            <label for="id_password">Password:</label>
+            {{ form.password }}
+
+            <label for="id_profile_picture">Profile Picture:</label>
+            {{ form.profile_picture }}
+
+            <label for="id_phone">Phone:</label>
+            {{ form.phone }}
+
+            <label for="id_bio">Bio:</label>
+            {{ form.bio }}
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

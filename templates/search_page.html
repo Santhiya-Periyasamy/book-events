@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding-bottom: 80px; /* Footer spacing */
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 40px auto 20px;
+            text-align: center;
+        }
+
+        .search-box h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .search-box input[type="text"] {
+            width: 65%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+            text-align: center;
+        }
+
+        .results {
+            margin-top: 30px;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .event-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+        }
+
+        .event-card .card-content {
+            padding: 15px;
+        }
+
+        .event-card h3 {
+            margin: 10px 0 5px;
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+
+        .event-card p {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .event-card .event-meta {
+            font-size: 0.85em;
+            color: #95a5a6;
+        }
+
+        .book-now {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 15px;
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .book-now:hover {
+            background-color: #219150;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 0;
+        }
+
+        footer nav {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        footer nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        footer nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-box">
+        <h2>Discover Events Near You</h2>
+        <input type="text" id="search-input" placeholder="Search by event name, city, or venue...">
+    </div>
+
+    <div class="results" id="results">
+        {% for event in results %}
+            <div class="event-card" data-title="{{ event.title|lower }}">
+                {% if event.image %}
+                    <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                {% endif %}
+                <div class="card-content">
+                    <h3>{{ event.title }}</h3>
+                    <p>{{ event.description|truncatechars:80 }}</p>
+                    <div class="event-meta">
+                        {% if event.date %}
+                            📅 {{ event.date|date:"M d, Y" }}
+                        {% endif %}
+                        {% if event.location %}
+                            &nbsp;|&nbsp; 📍 {{ event.location }}
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'show_list' event.id %}" class="book-now">Book Now</a>
+                </div>
+            </div>
+        {% empty %}
+            <p style="text-align:center; width:100%;">No events found at the moment.</p>
+        {% endfor %}
+    </div>
+
+    <footer>
+        <nav>
+            <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+            <a href="{% url 'all_events' %}"><i class="fas fa-calendar-alt"></i> Events</a>
+            <a href="#"><i class="fas fa-ticket-alt"></i> Book Tickets</a>
+            <a href="{% url 'profile' %}"><i class="fas fa-user"></i> Profile</a>
+        </nav>
+    </footer>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const eventCards = document.querySelectorAll('.event-card');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            eventCards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                if (title.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
